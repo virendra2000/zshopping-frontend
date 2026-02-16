@@ -13,7 +13,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route path="*" element={<h1>Restricted Page <br/> Please contact Administrator</h1>} />
     </Routes>
   </Router>
   )
