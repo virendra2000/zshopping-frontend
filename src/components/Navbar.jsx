@@ -36,7 +36,7 @@ const Navbar = () => {
 
           {/* Login */}
           <a
-            href="/login"
+            href="/user/login"
             className="btn-primary px-6 py-2 bg-[#E91E1E] text-white rounded-md font-semibold hover:bg-red-600 transition"
           >
             Login

@@ -186,7 +186,7 @@ const Login = () => {
           {/* SIGNUP */}
           <p className="text-center mt-6 text-sm">
             Don’t have an account?{" "}
-            <a href="/register" className="text-[#E91E1E] font-semibold">
+            <a href="/user/register" className="text-[#E91E1E] font-semibold">
               Sign Up
             </a>
           </p>
