@@ -2,16 +2,22 @@ import { maintenanceConfig } from "../utils/maintenanceConfig"
 
 export const isMaintenanceTime = () => {
 
-  if(!maintenanceConfig.enabled) return false
+  if (!maintenanceConfig.enabled) return false;
 
-  const now = new Date()
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
 
-  const start = new Date()
-  start.setHours(maintenanceConfig.startHour)
-  start.setMinutes(maintenanceConfig.startMinute)
-  start.setSeconds(0)
+  const startHour = maintenanceConfig.startHour;
+  const endHour = (startHour + maintenanceConfig.durationHours) % 24;
 
-  const end = new Date(start.getTime() + maintenanceConfig.durationHours * 60 * 60 * 1000)
+  // Example: start 23, duration 3 → end 2
 
-  return now >= start && now <= end
+  if (startHour < endHour) {
+    // normal window
+    return hour >= startHour && hour < endHour;
+  } else {
+    // window crosses midnight
+    return hour >= startHour || hour < endHour;
+  }
 }

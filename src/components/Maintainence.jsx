@@ -77,7 +77,7 @@ const Maintenance = () => {
       </h1>
 
       <p className="text-gray-400 mt-3">
-        Our site will be back at 12:00 AM
+        Our site will be back soon. We are performing scheduled maintenance. Thank you for your patience.
       </p>
 
       {/* Countdown */}
