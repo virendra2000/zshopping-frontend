@@ -51,7 +51,7 @@ const Home = () => {
           console.log(error)
           setErrorMsg(true)
         }
-  })
+  },[]);
 
   useEffect(() => {
     getProducts();
