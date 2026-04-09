@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import shoppingimg from '../assets/shopping.png'
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import {Link} from "react-router-dom";
 import axios from "../axiosConfig";
 const Home = () => {
   const heroRef = useRef(null);
@@ -11,30 +12,37 @@ const Home = () => {
   const [errormsg,setErrorMsg] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      const { left, top, width, height } =
-        heroRef.current.getBoundingClientRect();
+  const handleMouseMove = (e) => {
+    if (!heroRef.current || !imageRef.current) return; // ✅ SAFETY
 
-      const x = (e.clientX - left) / width;
-      const y = (e.clientY - top) / height;
+    const { left, top, width, height } =
+      heroRef.current.getBoundingClientRect();
 
-      heroRef.current.style.setProperty("--mouse-x", `${x * 100}%`);
-      heroRef.current.style.setProperty("--mouse-y", `${y * 100}%`);
+    const x = (e.clientX - left) / width;
+    const y = (e.clientY - top) / height;
 
-      // Parallax tilt
-      imageRef.current.style.transform = `
-        rotateY(${(x - 0.5) * 15}deg)
-        rotateX(${(0.5 - y) * 15}deg)
-        translateZ(20px)
-      `;
-    };
+    heroRef.current.style.setProperty("--mouse-x", `${x * 100}%`);
+    heroRef.current.style.setProperty("--mouse-y", `${y * 100}%`);
 
-    heroRef.current.addEventListener("mousemove", handleMouseMove);
+    imageRef.current.style.transform = `
+      rotateY(${(x - 0.5) * 15}deg)
+      rotateX(${(0.5 - y) * 15}deg)
+      translateZ(20px)
+    `;
+  };
 
-    return () => {
-      heroRef.current.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+  const hero = heroRef.current;
+
+  if (!hero) return; // ✅ IMPORTANT
+
+  hero.addEventListener("mousemove", handleMouseMove);
+
+  return () => {
+    if (hero) {
+      hero.removeEventListener("mousemove", handleMouseMove); // ✅ SAFE
+    }
+  };
+}, []);
 
 
   const getProducts = useCallback(async () => {
@@ -102,19 +110,32 @@ const Home = () => {
       <div className="sparkles"></div>
       <div className="shimmer"></div>
     </header>
-    <section className="products flex flex-col gap-2">
-        <span className="px-10 py-5 text-2xl font-bold">All Products</span>
+    <section className="products flex flex-col gap-2 w-full">
+        <span className="px-10 py-5 text-2xl font-bold w-full">All Products</span>
 
-        <div className="px-10 py-5 flex flex-row gap-2">
+        <div className="px-5 py-5 flex flex-col w-full md:flex-row gap-2 flex-wrap">
           {products.map((product) => (
-            <div className="p-5 flex flex-col bg-slate-100 shadow-xl shadow-slate-600 rounded-md gap-2" key={product.id}>
+            <Link
+              key={product.id}
+              to={`/products/${product.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+            <div className="p-5 flex flex-col bg-slate-100 shadow-xl shadow-slate-600 rounded-md gap-2">
               <img src={shoppingimg} className="w-52 h-auto"></img>
               <span className="text-xl font-bold">
                 {product.name}
               </span>
               <p className="text-gray-500">{product.description}</p>
               <span className="text-lg font-bold text-green-500">&#8377; {product.price}</span>
+
+              <button
+                className={`cart-btn py-2 cursor-pointer bg-green-500 text-slate-100 rounded-md ${!product.available ? "disabled-btn bg-red-500" : ""}`}
+                disabled={!product.available}
+              >
+                {product.available ? "Add to cart" : "Out of Stock"}
+              </button>
             </div>
+            </Link>
             ))}
         </div>
     </section>

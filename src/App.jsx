@@ -10,6 +10,8 @@ import AdminLogin from './components/Admin/AdminLogin'
 import AdminRoute from './components/Admin/AdminRoute'
 import Maintenance from './components/Maintainence'
 import { isMaintenanceTime } from './components/utils/maintenanceCheck'
+import Products from './components/Products'
+import ProductPage from './components/ProductPage'
 function App() {
   const maintenanceMode = isMaintenanceTime();
 
@@ -24,6 +26,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/register" element={<Register />} />
+        <Route path="/products" element={<Products/>}/>
+        <Route path="/products/:id" element={<ProductPage/>}/>
         <Route path="/admin" element={<AdminRoute>
           <AdminLogin/>
         </AdminRoute>} />
