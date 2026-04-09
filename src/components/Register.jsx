@@ -59,6 +59,8 @@ const Register = () => {
       return;
     }
 
+    
+
     setErrors({});
     setSuccess(true);
     setForm({

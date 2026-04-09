@@ -1,10 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import shoppingimg from '../assets/shopping.png'
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import axios from "../axiosConfig";
 const Home = () => {
   const heroRef = useRef(null);
   const imageRef = useRef(null);
+  // axios.default.withCredentials=true;
+  const [products,setProducts] = useState([]);
+  const [errormsg,setErrorMsg] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -31,6 +35,31 @@ const Home = () => {
       heroRef.current.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+
+  const getProducts = useCallback(async () => {
+     try {
+          const res = await axios.get("/zshopping/api/products");
+          const data = res.data;
+          setProducts(data);
+          setErrorMsg(false);
+          if (res.status !== 200) {
+            setErrorMsg(true);
+          }
+        }
+        catch(error) {
+          console.log(error)
+          setErrorMsg(true)
+        }
+  })
+
+  useEffect(() => {
+    getProducts();
+  },[getProducts]);
+
+  if(errormsg === true) {
+    return "Network Error or Server Level Error";
+  }
 
   return (
     <>
@@ -73,6 +102,23 @@ const Home = () => {
       <div className="sparkles"></div>
       <div className="shimmer"></div>
     </header>
+    <section className="products flex flex-col gap-2">
+        <span className="px-10 py-5 text-2xl font-bold">All Products</span>
+
+        <div className="px-10 py-5 flex flex-row gap-2">
+          {products.map((product) => (
+            <div className="p-5 flex flex-col bg-slate-100 shadow-xl shadow-slate-600 rounded-md gap-2" key={product.id}>
+              <img src={shoppingimg} className="w-52 h-auto"></img>
+              <span className="text-xl font-bold">
+                {product.name}
+              </span>
+              <p className="text-gray-500">{product.description}</p>
+              <span className="text-lg font-bold text-green-500">&#8377; {product.price}</span>
+            </div>
+            ))}
+        </div>
+    </section>
+
     <Footer/>
     </>
   )
